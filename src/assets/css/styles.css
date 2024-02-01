@@ -1,0 +1,24 @@
+body {
+  margin: 0;
+  background-color: #2f4f30;
+}
+
+.title {
+  text-align: center;
+  background-color: black;
+  color: white;
+  padding: 1.25rem;
+  font-size: 2rem;
+}
+
+.carta {
+  position: relative;
+  left: 5rem;
+  width: 10rem;
+  margin-left: -3rem;
+}
+
+#pc-cartas,
+#jugador-cartas {
+  height: 15rem;
+}
