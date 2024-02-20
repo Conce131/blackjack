@@ -17,30 +17,26 @@
     <header class="title">BlackJack</header>
     <div class="row mt-2">
       <div class="col text-center">
-        <button type="button" class="btn btn-danger">Nuevo Juego</button>
-        <button type="button" class="btn btn-primary">Pedir Carta</button>
-        <button type="button" class="btn btn-primary">Detener</button>
+        <button id="" type="button" class="btn btn-danger">Nuevo Juego</button>
+        <button id="btnDraw" type="button" class="btn btn-primary">
+          Pedir Carta
+        </button>
+        <button id="btnStop" type="button" class="btn btn-primary">
+          Detener
+        </button>
       </div>
     </div>
     <div class="row container">
       <div class="col">
         <h1>Jugador 1 - <small>0</small></h1>
-        <div id="jugador-assets/cartas">
-          <img class="carta" src="assets/cartas/red_back.png" alt="" />
-          <img class="carta" src="assets/cartas/red_back.png" alt="" />
-          <img class="carta" src="assets/cartas/red_back.png" alt="" />
-          <img class="carta" src="assets/cartas/red_back.png" alt="" />
-        </div>
+        <div id="playerCards"></div>
       </div>
     </div>
     <div class="row container mt-2">
       <div class="col">
         <h1>Pc 1 - <small>0</small></h1>
-        <div id="pc-assets/cartas">
-          <img class="carta" src="assets/cartas/red_back.png" alt="" />
-          <img class="carta" src="assets/cartas/red_back.png" alt="" />
-          <img class="carta" src="assets/cartas/red_back.png" alt="" />
-          <img class="carta" src="assets/cartas/red_back.png" alt="" />
+        <div id="pcCards">
+          <!-- <img class="carta" src="assets/cartas/red_back.png" alt="" /> -->
         </div>
       </div>
     </div>
