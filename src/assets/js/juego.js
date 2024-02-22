@@ -1,119 +1,150 @@
 import { shuffle } from "underscore"
 
-let deck = []
-const types = ['C', 'D', 'H', 'S']
-const specials = ['A', 'J', 'Q', 'K']
+(() => {
+    'use strict'
 
-let playerPoints = 0,
-    pcPoints = 0
+    let deck = []
+    const types = ['C', 'D', 'H', 'S'],
+        specials = ['A', 'J', 'Q', 'K']
 
-//referencias html
-const btnDraw = document.querySelector('#btnDraw')
-const btnStop = document.querySelector('#btnStop')
-const divPlayerCards = document.querySelector('#playerCards')
-const divPcCards = document.querySelector('#pcCards')
-const scoreHTML = document.querySelectorAll('small')
+    let playersPoints = []
 
-const createDeck = () => {
-    for (let i = 2; i <= 10; i++) {
-        for (let type of types) {
-            deck.push(i + type)
+    //referencias html
+    const btnDraw = document.querySelector('#btnDraw'),
+        btnStop = document.querySelector('#btnStop'),
+        btnNew = document.querySelector('#btnNew')
+
+    const divPLayerCards = document.querySelectorAll('.divCards'),
+        scoreHTML = document.querySelectorAll('small')
+
+    const startGame = (numPLayers = 2) => {
+        deck = createDeck()
+        playersPoints = []
+        for (let i = 0; i < numPLayers; i++) {
+            playersPoints.push(0)
         }
+
+        scoreHTML.forEach(e => e.innerHTML = 0)
+        divPLayerCards.forEach(e => e.innerHTML = '')
+
+        btnDraw.disabled = false
+        btnStop.disabled = false
     }
-    for (let tipo of types) {
-        for (let spe of specials) {
-            deck.push(spe + tipo)
+    const createDeck = () => {
+        for (let i = 2; i <= 10; i++) {
+            for (let type of types) {
+                deck.push(i + type)
+            }
         }
-    }
-    console.log('deck', deck)
-    deck = shuffle(deck)
-    console.log(deck);
-    return deck
-}
-
-// Esta funcion me permite pedir una carta
-
-const drawCard = () => {
-
-    if (deck.length === 0) {
-        throw 'No hay cartas en el deck'
+        for (let tipo of types) {
+            for (let spe of specials) {
+                deck.push(spe + tipo)
+            }
+        }
+        return shuffle(deck)
     }
 
-    let card = deck.pop()
-    return card
-}
+    // Esta funcion me permite pedir una carta
 
-const cardValue = (card) => {
-    const value = card.match(/[2-9]|10|A|J|Q|K/)
-    //otra manera card.substring(0, card.length -1)
-    return (isNaN(value)) ?
-        (value === 'A') ? 11 : 10
-        :
-        value * 1
-}
+    const drawCard = () => {
+        if (deck.length === 0) {
+            throw 'No hay cartas en el deck'
+        }
+        return deck.pop()
+    }
 
-createDeck()
+    const cardValue = (card) => {
+        const value = card.match(/[2-9]|10|A|J|Q|K/)
+        //otra manera card.substring(0, card.length -1)
+        return (isNaN(value)) ?
+            (value === 'A') ? 11 : 10
+            :
+            value * 1
+    }
 
-//turno del pc
-const pcTurn = (minPoints) => {
-    do {
-        const card = drawCard()
 
-        pcPoints = pcPoints + cardValue(card)
-        scoreHTML[1].innerText = pcPoints
-        // <img class="carta" src="assets/cartas/red_back.png" alt="" />
+    //turno 0 = primer jugador y el ultimo la computadora
+    const acumulatePoints = (card, turn) => {
+        playersPoints[turn] = playersPoints[turn] + cardValue(card)
+        scoreHTML[turn].innerText = playersPoints[turn]
+        return playersPoints[turn]
+    }
+
+    const createCard = (card, turn) => {
         const cardImg = document.createElement('img')
         cardImg.src = `assets/cartas/${card}.png`
         cardImg.classList.add('carta')
-        divPcCards.append(cardImg)
-        if (minPoints > 21) {
-            break
-        }
-
-    } while (pcPoints < minPoints && minPoints <= 21);
-
-    setTimeout(() => {
-        if (pcPoints === minPoints) {
-            alert('Nadie gana :( ')
-        } else if (minPoints > 21) {
-            alert('Computadora gana')
-        } else if (pcPoints > 21) {
-            alert('Jugador Gana')
-        } else {
-            ('Computadora Gana')
-        }
-    }, 20);
-
-}
-
-//Eventos 
-btnDraw.addEventListener('click', () => {
-    const card = drawCard()
-
-    playerPoints = playerPoints + cardValue(card)
-    scoreHTML[0].innerText = playerPoints
-    // <img class="carta" src="assets/cartas/red_back.png" alt="" />
-    const cardImg = document.createElement('img')
-    cardImg.src = `assets/cartas/${card}.png`
-    cardImg.classList.add('carta')
-    divPlayerCards.append(cardImg)
-
-    if (playerPoints > 21) {
-        console.warn('Lo siento mucho, perdiste');
-        btnDraw.disabled = true
-        pcTurn(playerPoints)
-    } else if (playerPoints === 21) {
-        console.warn('21, genial!');
-        pcTurn(playerPoints)
+        divPLayerCards[turn].append(cardImg)
     }
-})
 
-btnStop.addEventListener('click', () => {
-    btnDraw.disabled = true
-    btnStop.disabled = true
-    pcTurn(playerPoints)
+    const whoWins = () => {
 
-})
+        const [minPoints, pcPoints] = playersPoints
+
+        setTimeout(() => {
+            if (pcPoints === minPoints) {
+                alert('Nadie gana :( ')
+            } else if (minPoints > 21) {
+                btnStop.disabled = true
+                alert('Computadora gana')
+            } else if (pcPoints > 21) {
+                btnStop.disabled = true
+                btnDraw.disabled = true
+                alert('Jugador Gana')
+            } else {
+                ('Computadora Gana')
+                btnDraw.disabled = true
+                btnStop.disabled = true
+            }
+        }, 40);
+    }
+
+    const pcTurn = (minPoints) => {
+        let pcPoints = 0
+        do {
+            const card = drawCard()
+            pcPoints = acumulatePoints(card, playersPoints.length - 1)
+            createCard(card, playersPoints.length - 1)
+            if (minPoints > 21) {
+                break
+            }
+
+        } while (pcPoints < minPoints && minPoints <= 21);
+
+        whoWins()
+    }
+
+    //Eventos 
+    btnDraw.addEventListener('click', () => {
+        const card = drawCard()
+        let playerPoints = 0
+        playerPoints = acumulatePoints(card, 0)
+
+        createCard(card, 0)
+
+        if (playerPoints > 21) {
+            console.warn('Lo siento mucho, perdiste');
+            btnDraw.disabled = true
+            pcTurn(playerPoints)
+        } else if (playerPoints === 21) {
+            console.warn('21, genial!');
+            pcTurn(playerPoints)
+        }
+    })
+
+    btnStop.addEventListener('click', () => {
+        btnDraw.disabled = true
+        btnStop.disabled = true
+        pcTurn(playersPoints[0])
+    })
 
 
+    btnNew.addEventListener('click', () => {
+        startGame()
+    })
 
+    return {
+        newGame: startGame()
+    }
+
+})()

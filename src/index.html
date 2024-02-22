@@ -17,7 +17,9 @@
     <header class="title">BlackJack</header>
     <div class="row mt-2">
       <div class="col text-center">
-        <button id="" type="button" class="btn btn-danger">Nuevo Juego</button>
+        <button id="btnNew" type="button" class="btn btn-danger">
+          Nuevo Juego
+        </button>
         <button id="btnDraw" type="button" class="btn btn-primary">
           Pedir Carta
         </button>
@@ -29,17 +31,17 @@
     <div class="row container">
       <div class="col">
         <h1>Jugador 1 - <small>0</small></h1>
-        <div id="playerCards"></div>
+        <div id="playerCards" class="divCards"></div>
       </div>
     </div>
     <div class="row container mt-2">
       <div class="col">
         <h1>Pc 1 - <small>0</small></h1>
-        <div id="pcCards">
+        <div id="pcCards" class="divCards">
           <!-- <img class="carta" src="assets/cartas/red_back.png" alt="" /> -->
         </div>
       </div>
     </div>
-    <script src="assets/js/juego.js" type="module"></script>
+    <script src="assets/js/juego-min.js" type="module"></script>
   </body>
 </html>
